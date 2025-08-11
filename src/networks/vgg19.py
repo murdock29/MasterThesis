@@ -4,7 +4,7 @@ from torch.nn.functional import relu, sigmoid
 
 
 class VGG19(nn.Module):
-    def __init__(self, num_classes=1000):
+    def __init__(self, num_classes=10):
         super(VGG19, self).__init__()
         self.features = nn.Sequential(
             # Block 1
@@ -55,10 +55,9 @@ class VGG19(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
-        self.avgpool = nn.AdaptiveAvgPool2d((7, 7))
 
         self.classifier = nn.Sequential(
-            nn.Linear(512 * 7 * 7, 4096),
+            nn.Linear(512*7*7, 4096), #todo
             nn.ReLU(inplace=True),
             nn.Dropout(),
             nn.Linear(4096, 4096),
@@ -69,16 +68,15 @@ class VGG19(nn.Module):
 
     def forward(self, x):
         x = self.features(x)
-        x = self.avgpool(x)
         x = torch.flatten(x, 1)
         x = self.classifier(x)
+        # x = nn.Linear(512, num_classes)(x) #todo
         return x
 
 
-def unet(pretrained=False, weights=None,**kwargs):
+
+def vgg19(pretrained=False,**kwargs):
     if pretrained:
-        model = VGG19(**kwargs)
-        state_dict = torch.hub.load_state_dict_from_url(weights)
-        model.load_state_dict(state_dict)
+        raise NotImplementedError
     model = VGG19(**kwargs)
     return model
