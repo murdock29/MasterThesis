@@ -13,7 +13,7 @@ from datasets.dataset_config import dataset_config
 from networks import tvmodels, allmodels, set_tvmodel_head_var
 
 
-VALIDATION = 0 #todo
+VALIDATION = 0.1 #todo
 
 def main(argv=None):
     tstart = time.time()
@@ -66,7 +66,7 @@ def main(argv=None):
                         help='Momentum factor (default=%(default)s)')
     parser.add_argument('--weight-decay', default=1e-4, type=float, required=False,
                         help='Weight decay (L2 penalty) (default=%(default)s)')
-    parser.add_argument('--eval-on-train', default=True, action='store_true',
+    parser.add_argument('--eval-on-train', default=False, action='store_true',
                         help='Show train loss and accuracy (default=%(default)s)')
 
     # Args -- Learning Framework

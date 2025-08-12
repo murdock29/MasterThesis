@@ -28,6 +28,7 @@ class Appr(Learning_Appr):
         """Contains the epochs loop"""
         lr = self.lr
         best_model = self.model.get_copy()
+        best_loss = np.inf
 
         self.optimizer = self._get_optimizer()
 
@@ -45,15 +46,15 @@ class Appr(Learning_Appr):
                 self.logger.log_scalar(iter=e + 1, name="loss", value=train_loss, group="train")
                 self.logger.log_scalar(iter=e + 1, name="acc", value=100 * train_acc, group="train")
             else:
-                print('| Epoch {:3d}, time={:5.1f}s | Train: skip eval |'.format(e + 1, clock1 - clock0), end='')
+                print('\n| Epoch {:3d}, time={:5.1f}s | Train: skip eval |'.format(e + 1, clock1 - clock0), end='')
 
             # Valid
 
             clock3 = time.time()
-            # valid_loss, valid_acc = self.eval(val_loader)
+            valid_loss, valid_acc = self.eval(val_loader)
             clock4 = time.time()
-            # print(' Valid: time={:5.1f}s loss={:.6f}, acc={:5.1f}%|'.format(
-            #     clock4 - clock3, valid_loss, 100 * valid_acc), end='')
+            print(' Valid: time={:5.1f}s loss={:.6f}, acc={:5.1f}%|'.format(
+                clock4 - clock3, valid_loss, 100 * valid_acc), end='')
             # self.logger.log_scalar(iter=e + 1, name="loss", value=valid_loss, group="valid")
             # self.logger.log_scalar(iter=e + 1, name="acc", value=100 * valid_acc, group="valid")
 
@@ -68,8 +69,15 @@ class Appr(Learning_Appr):
                 self.lr *= 0.1
 
             self.logger.log_scalar(iter=e + 1, name="lr", value=lr, group="train")
-            print()
-        # self.model.set_state_dict(best_model) #todo
+            # Adapt learning rate - patience scheme - early stopping regularization
+            if valid_loss < best_loss:
+                # if the loss goes down, keep it as the best model and end line with a star ( * )
+                best_loss = valid_loss
+                best_model = self.model.get_copy()
+                # patience = self.lr_patience
+                print(' *', end='')
+
+        self.model.set_state_dict(best_model) #todo
 
     def train_epoch(self, loader):
         """Runs a single epoch"""
@@ -94,7 +102,7 @@ class Appr(Learning_Appr):
                 outputs = self.model(images.to(self.device))
                 loss = self.criterion(outputs, torch.argmax(targets, dim=1).to(self.device))
                 # Accuracy
-                predicted = torch.argmax(outputs.data, 1)
+                predicted = torch.argmax(torch.softmax(outputs).data, 1)
                 total_loss += loss.sum().item()
                 total_num += len(targets)
                 total_acc += (predicted.cpu() == torch.argmax(targets, dim=1)).sum().item()

@@ -56,6 +56,8 @@ def get_data(trn_data, tst_data, validation):
         for ii in range(len(rnd_img)):
             data['val']['x'].append(data['trn']['x'][rnd_img[ii]])
             data['val']['y'].append(data['trn']['y'][rnd_img[ii]])
-            data['trn']['x'].pop(rnd_img[ii])
-            data['trn']['y'].pop(rnd_img[ii])
+            # data['trn']['x'].pop(rnd_img[ii])
+            # data['trn']['y'].pop(rnd_img[ii])
+        data['trn']['x'] = np.delete(data['trn']['x'], rnd_img, axis=0)
+        data['trn']['y'] = np.delete(data['trn']['y'], rnd_img, axis=0)
     return data

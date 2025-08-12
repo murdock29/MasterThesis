@@ -44,20 +44,20 @@ class VGG19(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2),
 
             # Block 5
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
+            # nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            # nn.ReLU(inplace=True),
+            # nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            # nn.ReLU(inplace=True),
+            # nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            # nn.ReLU(inplace=True),
+            # nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            # nn.ReLU(inplace=True),
+            # nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
 
         self.classifier = nn.Sequential(
-            nn.Linear(512, 4096), #todo
+            nn.Linear(512 *2 *2, 4096), #todo
             nn.ReLU(inplace=True),
             nn.Dropout(),
             nn.Linear(4096, 4096),
