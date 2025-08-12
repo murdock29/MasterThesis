@@ -13,7 +13,7 @@ from datasets.dataset_config import dataset_config
 from networks import tvmodels, allmodels, set_tvmodel_head_var
 
 
-VALIDATION = 0
+VALIDATION = 0 #todo
 
 def main(argv=None):
     tstart = time.time()
@@ -50,7 +50,7 @@ def main(argv=None):
     # training args
     parser.add_argument('--approach', default='tunnel_effect_analysis', type=str, choices=approach.__all__,
                         help='Learning approach used (default=%(default)s)', metavar="APPROACH")
-    parser.add_argument('--nepochs', default=41, type=int, required=False,
+    parser.add_argument('--nepochs', default=161, type=int, required=False,
                         help='Number of epochs per training session (default=%(default)s)')
     parser.add_argument('--lr', default=0.1, type=float, required=False,
                         help='Starting learning rate (default=%(default)s)')

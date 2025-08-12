@@ -84,10 +84,12 @@ def get_dataset(dataset, path, validation, trn_transform, tst_transform):
 def get_transforms(resize, pad, crop, flip, normalize, extend_channel, elastic, color_jitter, blur):
     """Unpack transformations and apply to train or test splits"""
 
-    trn_transform_list = [transforms.ToTensor(), transforms.Resize((224,224))]
-    tst_transform_list = [transforms.ToTensor(), transforms.Resize((224,224))]
+    trn_transform_list = [transforms.ToTensor()]
+    tst_transform_list = [transforms.ToTensor()]
 
-
+    if normalize:
+        trn_transform_list.append(transforms.Normalize(mean=normalize[0], std=normalize[1]))
+        tst_transform_list.append(transforms.Normalize(mean=normalize[0], std=normalize[1]))
     # resize
     if resize is not None:
         trn_transform_list.append(transforms.Resize(resize, antialias=None))

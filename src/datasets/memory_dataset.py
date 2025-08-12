@@ -41,7 +41,7 @@ def get_data(trn_data, tst_data, validation):
 
     # validation
     if validation > 0.0:
-        raise Exception('Validation not implemented yet')
+        # raise Exception('Validation not implemented yet')
         # images = 30
         # rnd_img = random.sample(range(images), int(np.round(images * validation)))
         # rnd_img_idx = [idx for idx, fname in enumerate(trn_data['f']) if int(fname.split('/')[-1].split('.')[0].split('_')[1]) in rnd_img]
@@ -51,5 +51,11 @@ def get_data(trn_data, tst_data, validation):
         #     data['val']['y'].append(trn_data['y'][ii])
         #     data['trn']['x'].pop(ii)
         #     data['trn']['y'].pop(ii)
-
+        rnd_img = random.sample(range(len(data['trn']['x'])), int(np.round(len(data['trn']['x']) * validation)))
+        rnd_img.sort(reverse=True)
+        for ii in range(len(rnd_img)):
+            data['val']['x'].append(data['trn']['x'][rnd_img[ii]])
+            data['val']['y'].append(data['trn']['y'][rnd_img[ii]])
+            data['trn']['x'].pop(rnd_img[ii])
+            data['trn']['y'].pop(rnd_img[ii])
     return data

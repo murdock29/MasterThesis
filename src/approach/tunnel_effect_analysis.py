@@ -40,7 +40,7 @@ class Appr(Learning_Appr):
             if self.eval_on_train:
                 train_loss, train_acc = self.eval(trn_loader)
                 clock2 = time.time()
-                print('| Epoch {:3d}, time={:5.1f}s/{:5.1f}s | Train: loss={:.3f}, acc={:5.1f}%'.format(
+                print('| Epoch {:3d}, time={:5.1f}s/{:5.1f}s | Train: loss={:.6f}, acc={:5.1f}%'.format(
                     e + 1, clock1 - clock0, clock2 - clock1, train_loss, 100 * train_acc), end='')
                 self.logger.log_scalar(iter=e + 1, name="loss", value=train_loss, group="train")
                 self.logger.log_scalar(iter=e + 1, name="acc", value=100 * train_acc, group="train")
@@ -48,11 +48,12 @@ class Appr(Learning_Appr):
                 print('| Epoch {:3d}, time={:5.1f}s | Train: skip eval |'.format(e + 1, clock1 - clock0), end='')
 
             # Valid
+
             clock3 = time.time()
             # valid_loss, valid_acc = self.eval(val_loader)
             clock4 = time.time()
-            # print(' Valid: time={:5.1f}s loss={:.3f}, acc={:5.1f}%, dice={:5.1f}% |'.format(
-            #     clock4 - clock3, valid_loss, 100 * valid_acc, 100 * valid_metric), end='')
+            # print(' Valid: time={:5.1f}s loss={:.6f}, acc={:5.1f}%|'.format(
+            #     clock4 - clock3, valid_loss, 100 * valid_acc), end='')
             # self.logger.log_scalar(iter=e + 1, name="loss", value=valid_loss, group="valid")
             # self.logger.log_scalar(iter=e + 1, name="acc", value=100 * valid_acc, group="valid")
 
@@ -68,7 +69,7 @@ class Appr(Learning_Appr):
 
             self.logger.log_scalar(iter=e + 1, name="lr", value=lr, group="train")
             print()
-        self.model.set_state_dict(best_model)
+        # self.model.set_state_dict(best_model) #todo
 
     def train_epoch(self, loader):
         """Runs a single epoch"""
@@ -80,7 +81,7 @@ class Appr(Learning_Appr):
             # Backward
             self.optimizer.zero_grad()
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clipgrad)
+            # torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clipgrad) todo check
             self.optimizer.step()
 
     def eval(self, loader):
