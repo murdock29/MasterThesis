@@ -44,20 +44,21 @@ class VGG19(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2),
 
             # Block 5
-            # nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            # nn.ReLU(inplace=True),
-            # nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            # nn.ReLU(inplace=True),
-            # nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            # nn.ReLU(inplace=True),
-            # nn.Conv2d(512, 512, kernel_size=3, padding=1),
-            # nn.ReLU(inplace=True),
-            # nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
         )
-
+        # Adaptive Max Pooling
+        self.adaptive_pool = nn.AdaptiveMaxPool2d((1, 1))
 
         self.classifier = nn.Sequential(
-            nn.Linear(512 *2 *2, 4096), #todo
+            nn.Linear(512 * 1 * 1, 4096),
             nn.ReLU(inplace=True),
             nn.Dropout(),
             nn.Linear(4096, 4096),
@@ -66,11 +67,13 @@ class VGG19(nn.Module):
             nn.Linear(4096, num_classes),
         )
 
+
     def forward(self, x):
         x = self.features(x)
+        x = self.adaptive_pool(x)  # Adaptive Max Pooling step
         x = torch.flatten(x, 1)
         x = self.classifier(x)
-        # x = nn.Linear(512, num_classes)(x) #todo
+        # x = nn.Linear(512, num_classes)(x)
         return x
 
 
